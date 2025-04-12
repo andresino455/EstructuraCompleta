@@ -1,0 +1,50 @@
+{
+  "vertices": [
+    { "posicion": [-0.5, -0.5, 0.5], "normal": [0, 0, 1], "texCoord": [0, 0] },
+    { "posicion": [0.5, -0.5, 0.5], "normal": [0, 0, 1], "texCoord": [1, 0] },
+    { "posicion": [0.5, 0.5, 0.5], "normal": [0, 0, 1], "texCoord": [1, 1] },
+    { "posicion": [-0.5, 0.5, 0.5], "normal": [0, 0, 1], "texCoord": [0, 1] },
+    
+    { "posicion": [0.5, -0.5, 0.5], "normal": [1, 0, 0], "texCoord": [0, 0] },
+    { "posicion": [0.5, -0.5, -0.5], "normal": [1, 0, 0], "texCoord": [1, 0] },
+    { "posicion": [0.5, 0.5, -0.5], "normal": [1, 0, 0], "texCoord": [1, 1] },
+    { "posicion": [0.5, 0.5, 0.5], "normal": [1, 0, 0], "texCoord": [0, 1] },
+    
+    { "posicion": [0.5, -0.5, -0.5], "normal": [0, 0, -1], "texCoord": [0, 0] },
+    { "posicion": [-0.5, -0.5, -0.5], "normal": [0, 0, -1], "texCoord": [1, 0] },
+    { "posicion": [-0.5, 0.5, -0.5], "normal": [0, 0, -1], "texCoord": [1, 1] },
+    { "posicion": [0.5, 0.5, -0.5], "normal": [0, 0, -1], "texCoord": [0, 1] },
+    
+
+    { "posicion": [-0.5, -0.5, -0.5], "normal": [-1, 0, 0], "texCoord": [0, 0] },
+    { "posicion": [-0.5, -0.5, 0.5], "normal": [-1, 0, 0], "texCoord": [1, 0] },
+    { "posicion": [-0.5, 0.5, 0.5], "normal": [-1, 0, 0], "texCoord": [1, 1] },
+    { "posicion": [-0.5, 0.5, -0.5], "normal": [-1, 0, 0], "texCoord": [0, 1] },
+    
+
+    { "posicion": [-0.5, 0.5, 0.5], "normal": [0, 1, 0], "texCoord": [0, 0] },
+    { "posicion": [0.5, 0.5, 0.5], "normal": [0, 1, 0], "texCoord": [1, 0] },
+    { "posicion": [0.5, 0.5, -0.5], "normal": [0, 1, 0], "texCoord": [1, 1] },
+    { "posicion": [-0.5, 0.5, -0.5], "normal": [0, 1, 0], "texCoord": [0, 1] },
+    
+
+    { "posicion": [-0.5, -0.5, -0.5], "normal": [0, -1, 0], "texCoord": [0, 0] },
+    { "posicion": [0.5, -0.5, -0.5], "normal": [0, -1, 0], "texCoord": [1, 0] },
+    { "posicion": [0.5, -0.5, 0.5], "normal": [0, -1, 0], "texCoord": [1, 1] },
+    { "posicion": [-0.5, -0.5, 0.5], "normal": [0, -1, 0], "texCoord": [0, 1] }
+  ],
+  "indices": [
+
+    0, 1, 2, 2, 3, 0,
+
+    4, 5, 6, 6, 7, 4,
+
+    8, 9, 10, 10, 11, 8,
+
+    12, 13, 14, 14, 15, 12,
+
+    16, 17, 18, 18, 19, 16,
+
+    20, 21, 22, 22, 23, 20
+  ]
+}
