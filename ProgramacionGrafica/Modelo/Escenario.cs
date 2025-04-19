@@ -3,23 +3,143 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace ProgramacionGrafica.Modelo
 {
-    public class Escenario : IDisposable
+    public class Escenario : IDisposable 
     {
         private bool _disposed = false;
         public List<Objeto> Objetos { get; } = new List<Objeto>();
 
 
+        private Vector3 _posicion = Vector3.Zero;
+        private Vector3 _rotacion = Vector3.Zero;
+        private Vector3 _escala = Vector3.One;
+
+        public Vector3 Posicion
+        {
+            get => _posicion;
+            set => _posicion = value;
+        }
+
+        public Vector3 Rotacion
+        {
+            get => _rotacion;
+            set => _rotacion = value;
+        }
+
+        public Vector3 Escala
+        {
+            get => _escala;
+            set => _escala = value;
+        }
+
+        #region Trasformaciones
+        public void Trasladar(Vector3 desplazamiento) {
+            _posicion += desplazamiento;
+
+        }
+
+        public void FijarTraslacion(Vector3 desplazamiento)
+        {
+            _posicion = desplazamiento;
+
+        }
+
+        public void Rotar(Vector3 angulos)
+        {
+            _rotacion.X += angulos.X;
+            _rotacion.Y += angulos.Y;
+            _rotacion.Z += angulos.Z;
+        }
+
+        public void FijarRotacion(Vector3 angulos)
+        {
+            _rotacion.X = angulos.X;
+            _rotacion.Y = angulos.Y;
+            _rotacion.Z = angulos.Z;
+        }
+
+        public void RotarObjetoPorNombre(string nombreObjeto, Vector3 angulos)
+        {
+            var objeto = Objetos.FirstOrDefault(o => o.Nombre == nombreObjeto);
+            if (objeto != null)
+            {
+                objeto.Rotar(angulos.X,angulos.Y,angulos.Z);
+            }
+            else
+            {
+                Console.WriteLine($"Advertencia: Objeto '{nombreObjeto}' no encontrado.");
+            }
+        }
+
+        public void EscalarObjetoPorNombre(string nombreObjeto, Vector3 angulos)
+        {
+            var objeto = Objetos.FirstOrDefault(o => o.Nombre == nombreObjeto);
+            if (objeto != null)
+            {
+                objeto.EstablecerEscala(angulos.X, angulos.Y, angulos.Z);
+            }
+            else
+            {
+                Console.WriteLine($"Advertencia: Objeto '{nombreObjeto}' no encontrado.");
+            }
+        }
+
+        public void TrasladarObjetoPorNombre(string nombreObjeto, Vector3 angulos)
+        {
+            var objeto = Objetos.FirstOrDefault(o => o.Nombre == nombreObjeto);
+            if (objeto != null)
+            {
+                objeto.Trasladar(angulos.X, angulos.Y, angulos.Z);
+            }
+            else
+            {
+                Console.WriteLine($"Advertencia: Objeto '{nombreObjeto}' no encontrado.");
+            }
+        }
+
+        public void PosicionarObjetoPorNombre(string nombreObjeto, Vector3 angulos)
+        {
+            var objeto = Objetos.FirstOrDefault(o => o.Nombre == nombreObjeto);
+            if (objeto != null)
+            {
+                objeto.EstablecerPosicion(angulos.X, angulos.Y, angulos.Z);
+            }
+            else
+            {
+                Console.WriteLine($"Advertencia: Objeto '{nombreObjeto}' no encontrado.");
+            }
+        }
+
+        public void Escalar(Vector3 factores) {
+            Escala *= factores;
+        }
+        public void FijarEscala(Vector3 factores)
+        {
+            Escala = factores;
+        }
+
+        public Matrix4 ObtenerMatrizTransformacion()
+        {
+            return Matrix4.CreateScale(_escala) *
+                   Matrix4.CreateRotationX(_rotacion.X) *
+                   Matrix4.CreateRotationY(_rotacion.Y) *
+                   Matrix4.CreateRotationZ(_rotacion.Z) *
+                   Matrix4.CreateTranslation(_posicion);
+        }
+
+        #endregion
+
         public void CargarContenido()
         {
 
-            var objeto1 = CrearObjeto("LetraU", "Objetos/LetraU.json");
+            var objeto1 = CrearObjeto("LetraU1", "Objetos/LetraU.json");
             Objetos.Add(objeto1);
 
-            var objeto2 = CrearObjeto("LetraU", "Objetos/LetraU.json");
+            var objeto2 = CrearObjeto("LetraU2", "Objetos/LetraU.json");
             Objetos.Add(objeto2);
 
             ConstruirBuffers();
@@ -100,11 +220,14 @@ namespace ProgramacionGrafica.Modelo
 
         public void Dibujar(Matrix4 view, Matrix4 projection, int shaderProgram)
         {
+            Matrix4 modeloEscenario = ObtenerMatrizTransformacion();
+
             foreach (var objeto in Objetos)
             {
-                objeto.Dibujar(view, projection, shaderProgram);
+                objeto.Dibujar(modeloEscenario, view, projection, shaderProgram);
             }
         }
+
 
         public class VerticeJson
         {

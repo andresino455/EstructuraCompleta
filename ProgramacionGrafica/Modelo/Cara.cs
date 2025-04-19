@@ -88,9 +88,9 @@ namespace ProgramacionGrafica.Modelo
             GL.BindVertexArray(0);
         }
 
-        public void Dibujar()
+        public void Dibujar(int shaderProgram)
         {
-            GL.BindVertexArray(_vao);
+            GL.BindVertexArray(VAO);
             GL.DrawElements(PrimitiveType.Triangles, Indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
         }

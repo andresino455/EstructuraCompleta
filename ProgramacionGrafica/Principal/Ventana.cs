@@ -33,9 +33,9 @@ namespace ProgramacionGrafica.Principal
 
             _shaderProgram = CrearShaderProgram();
 
-            Vector3 posicionInicial = new Vector3(3, 3, 3); // O cualquier punto desde el que quieras mirar
-            Vector3 objetivo = Vector3.Zero; // El cubo está en el origen
-            Vector3 up = Vector3.UnitY; // Dirección "arriba" del mundo
+            Vector3 posicionInicial = new Vector3(3, 3, 3); 
+            Vector3 objetivo = Vector3.Zero; 
+            Vector3 up = Vector3.UnitY; 
 
             _camara = new Camara(posicionInicial, objetivo, up);
             _camara.Position = new Vector3(0, 0, 3);
@@ -101,7 +101,7 @@ namespace ProgramacionGrafica.Principal
 
             //foreach (var objeto in _escenario.Objetos)
             //{
-            //    objeto.Rotacion = new Vector3(0, _anguloRotacion, 0);
+            //    objeto.Rotacion = new Vector3(0, 0, _anguloRotacion);
             //}
 
             Matrix4 view = _camara.GetViewMatrix();
@@ -109,8 +109,25 @@ namespace ProgramacionGrafica.Principal
                 MathHelper.DegreesToRadians(45f), Size.X / (float)Size.Y, 0.1f, 100f);
 
 
-            _escenario.Objetos[0].Posicion = new Vector3(-1.5f, 3f, 0f); 
-            _escenario.Objetos[1].Posicion = new Vector3(1.5f, 0f, 0f);   
+            //_escenario.Objetos[0].Rotar(1.5f, 0f, 0f);
+            _escenario.PosicionarObjetoPorNombre("LetraU1", new Vector3(0f, 0.5f, 0));
+            _escenario.PosicionarObjetoPorNombre("LetraU2", new Vector3(0.3f, 0, 0));
+
+
+
+
+            //   _escenario.Rotar(new Vector3(0.0001f,0,0));
+            //   //_escenario.FijarRotacion(new Vector3(0.5f, 0, 0));
+               _escenario.Trasladar(new Vector3(0.0001f, 0, 0));
+            //   //_escenario.FijarTraslacion(new Vector3(-0.7f, 0f, 0f));
+
+
+            //  _escenario.Escalar(new Vector3(0.00001f));
+            ////   _escenario.FijarEscala(new Vector3(2.0f));
+
+         //   _escenario.RotarObjetoPorNombre("LetraU1", new Vector3(0.001f, 0, 0));
+        //    _escenario.EscalarObjetoPorNombre("LetraU2", new Vector3(2f, 2f, 2f));
+           // _escenario.PosicionarObjetoPorNombre("LetraU2", new Vector3(0f, 0, 0));
 
             _escenario.Dibujar(view, projection, _shaderProgram);
 

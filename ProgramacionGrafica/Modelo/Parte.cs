@@ -10,6 +10,50 @@ namespace ProgramacionGrafica.Modelo
         private bool _disposed = false;
         public List<Cara> Caras { get; } = new List<Cara>();
 
+        private Vector3 _posicion = Vector3.Zero;
+        private Vector3 _rotacion = Vector3.Zero;
+        private Vector3 _escala = Vector3.One;
+
+        // Propiedades
+        public Vector3 Posicion
+        {
+            get => _posicion;
+            set => _posicion = value;
+        }
+
+        public Vector3 Rotacion
+        {
+            get => _rotacion;
+            set => _rotacion = value;
+        }
+
+        public Vector3 Escala
+        {
+            get => _escala;
+            set => _escala = value;
+        }
+
+        // Métodos de transformación
+        public void Trasladar(Vector3 desplazamiento) => _posicion += desplazamiento;
+
+        public void Rotar(Vector3 angulos)
+        {
+            _rotacion.X += angulos.X;
+            _rotacion.Y += angulos.Y;
+            _rotacion.Z += angulos.Z;
+        }
+
+        public void Escalar(Vector3 factores) => _escala *= factores;
+
+        public Matrix4 ObtenerMatrizTransformacion()
+        {
+            return Matrix4.CreateScale(_escala) *
+                   Matrix4.CreateRotationX(_rotacion.X) *
+                   Matrix4.CreateRotationY(_rotacion.Y) *
+                   Matrix4.CreateRotationZ(_rotacion.Z) *
+                   Matrix4.CreateTranslation(_posicion);
+        }
+
         private Matrix4 _transformacionLocal = Matrix4.Identity;
 
         public Matrix4 TransformacionLocal
@@ -35,25 +79,20 @@ namespace ProgramacionGrafica.Modelo
             Caras.Add(nuevaCara);
         }
 
-        public void Dibujar(Matrix4 transformacionPadre, Matrix4 view, Matrix4 projection, int shaderProgram)
+        public void Dibujar(Matrix4 modeloPadre, Matrix4 view, Matrix4 projection, int shaderProgram)
         {
-            Matrix4 transformacionFinal = transformacionPadre * _transformacionLocal;
+            Matrix4 modeloFinal = modeloPadre * ObtenerMatrizTransformacion();
 
-            GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, "model"), false, ref transformacionFinal);
+            // Pasa matrices UNICAMENTE aquí (evita repetir en Cara)
+            GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, "model"), false, ref modeloFinal);
             GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, "view"), false, ref view);
             GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, "projection"), false, ref projection);
 
-
-                GL.UseProgram(shaderProgram);
-                foreach (var cara in Caras)
-                {
-                    GL.BindVertexArray(cara.VAO);
-                    GL.DrawElements(PrimitiveType.Triangles, cara.Indices.Count, DrawElementsType.UnsignedInt, 0);
-                    GL.BindVertexArray(0);
-                }
-            
+            foreach (var cara in Caras)
+            {
+                cara.Dibujar(shaderProgram); 
+            }
         }
-
         public void Dispose()
         {
             Dispose(true);

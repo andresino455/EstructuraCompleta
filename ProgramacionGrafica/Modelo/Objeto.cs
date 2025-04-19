@@ -11,29 +11,40 @@ namespace ProgramacionGrafica.Modelo
         public string Nombre { get; set; }
         public List<Parte> Partes { get; } = new List<Parte>();
 
-        private Vector3 _posicion = Vector3.Zero;
-        private Vector3 _rotacion = Vector3.Zero;
-        private Vector3 _escala = Vector3.One;
+        public Vector3 Posicion { get; set; } = Vector3.Zero;
+        public Vector3 Rotacion { get; set; } = Vector3.Zero;
+        public Vector3 Escala { get; set; } = Vector3.One;
 
-        public Vector3 Posicion
+
+        #region transformaciones
+
+        public void Trasladar(float x, float y, float z) => Posicion += new Vector3(x, y, z);
+        public void Trasladar(Vector3 desplazamiento) => Posicion += desplazamiento;
+        public void EstablecerPosicion(float x, float y, float z) => Posicion = new Vector3(x, y, z);
+
+ 
+        public void Rotar(float anguloX, float anguloY, float anguloZ) => Rotacion += new Vector3(anguloX, anguloY, anguloZ);
+        public void EstablecerRotacion(float x, float y, float z) => Rotacion = new Vector3(x, y, z);
+
+        public void Escalar(float factor) => Escala *= new Vector3(factor);
+        public void Escalar(float x, float y, float z) => Escala *= new Vector3(x, y, z);
+        public void EstablecerEscala(float x, float y, float z) => Escala = new Vector3(x, y, z);
+
+
+        public void RotarAlrededorDe(Vector3 puntoCentral, Vector3 angulos)
         {
-            get => _posicion;
-            set => _posicion = value;
+            Matrix4 transform = Matrix4.CreateTranslation(-puntoCentral) *
+                               Matrix4.CreateRotationX(angulos.X) *
+                               Matrix4.CreateRotationY(angulos.Y) *
+                               Matrix4.CreateRotationZ(angulos.Z) *
+                               Matrix4.CreateTranslation(puntoCentral);
+
+            Posicion = Vector3.TransformPosition(Posicion, transform);
+            Rotacion += angulos;
         }
 
-        public Vector3 Rotacion
-        {
-            get => _rotacion;
-            set => _rotacion = value;
-        }
+        #endregion
 
-        public Vector3 Escala
-        {
-            get => _escala;
-            set => _escala = value;
-        }
-
-        
         public void AgregarParte(Parte parte)
         {
             if (parte == null)
@@ -54,7 +65,7 @@ namespace ProgramacionGrafica.Modelo
             return nuevaParte;
         }
 
-        public Matrix4 ObtenerTransformacionGlobal()
+        public Matrix4 ObtenerMatrizTransformacion()
         {
             return Matrix4.CreateScale(Escala) *
                    Matrix4.CreateRotationX(Rotacion.X) *
@@ -63,15 +74,16 @@ namespace ProgramacionGrafica.Modelo
                    Matrix4.CreateTranslation(Posicion);
         }
 
-        public void Dibujar(Matrix4 view, Matrix4 projection, int shaderProgram)
+        public void Dibujar(Matrix4 modeloPadre, Matrix4 view, Matrix4 projection, int shaderProgram)
         {
-            Matrix4 transformacionGlobal = ObtenerTransformacionGlobal();
+            Matrix4 modeloObjeto = modeloPadre * ObtenerMatrizTransformacion();
 
             foreach (var parte in Partes)
             {
-                parte.Dibujar(transformacionGlobal, view, projection, shaderProgram);
+                parte.Dibujar(modeloObjeto, view, projection, shaderProgram);
             }
         }
+
 
         public void Dispose()
         {
